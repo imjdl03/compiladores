@@ -1,8 +1,8 @@
 program myProgram;
 var
-a,b,c,d,x: float;
+a,b,c,d,e,f,g,x: float;
 
 main {
-    x = a*b*c*d; 
+    a = 2*1+(3*2);
     }
 end
