@@ -1,0 +1,6 @@
+program myProgram;
+var x,y,z:int;
+void function(x:int, y:int)
+    [var w,y,z:int; {x = 2;} ];
+main{}
+end

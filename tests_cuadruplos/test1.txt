@@ -1,0 +1,12 @@
+program myProgram;
+var
+x,z,y: int; 
+a: float;
+
+main {
+    print(2*a);
+    x = 6*(3+2*z);
+    print(x +1);
+    y = 4*1;
+    }
+end

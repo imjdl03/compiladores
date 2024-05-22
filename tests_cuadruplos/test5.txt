@@ -1,0 +1,8 @@
+program myProgram;
+var
+a,b,c,d,x: float;
+
+main {
+    x = a*b*c*d; 
+    }
+end

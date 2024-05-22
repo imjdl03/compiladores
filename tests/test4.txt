@@ -1,0 +1,9 @@
+program myProgram; 
+var x,y,z:int;
+void function(x:int, y:float)[
+    var x,y,z:int; {if(x>3) {x=3;};}
+    ];
+main {
+    do {x = 3+2;} while (x>3);
+    }
+end

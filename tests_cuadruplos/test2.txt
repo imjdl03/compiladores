@@ -1,0 +1,14 @@
+program myProgram;
+var
+x,z: int; 
+a: float;
+
+main {
+    print(x<z);
+    a = 2*1;
+    if(a > 2){
+        print(8*2+1);
+    };
+    a = 2*1;
+    }
+end

@@ -1,0 +1,8 @@
+program myProgram;
+var x, y, z: int;
+
+void function(z: int, a: float, d: int)
+    [var w: int; {x = 5 + 3 * 2 - 1;}];
+
+main {}
+end
