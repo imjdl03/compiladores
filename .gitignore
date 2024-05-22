@@ -5,4 +5,5 @@ pip-delete-this-directory.txt
 .eggs/
 .cache/pip/*
 pip/
+my_env/
 lib/
