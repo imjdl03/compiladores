@@ -9,7 +9,7 @@ from LittleDuckParser import LittleDuckParser
 from LittleDuckListener import LittleDuckListener
 
 # Obteniendo contenido de archivos de pruebas
-test_case = "tests_cuadruplos/test2.txt"
+test_case = "tests_cuadruplos/test5.txt"
 with open(test_case, 'r') as file:
     file_content = file.read()
 

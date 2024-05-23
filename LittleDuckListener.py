@@ -22,6 +22,7 @@ class LittleDuckListener(ParseTreeListener):
         self.pilaSaltos = []
         self.insideIf = False 
         self.contador = 0
+        self.flag = True
     
     # Funcion auxiliar para controlar la generación de variables "temporales"
     def generar_temporal(self):
@@ -323,7 +324,6 @@ class LittleDuckListener(ParseTreeListener):
     def exitExpression(self, ctx:LittleDuckParser.ExpressionContext):
         # Manejo de ><, ==, etc
         if ctx.getChildCount() > 1:
-            print("counter expresion", ctx.getChildCount())
             # Se extrae operador y se resuelve si hay otros con la misma precedencia
             operador = ctx.getChild(1).getText()
             self.pilaOperadores.append(operador) 
@@ -354,24 +354,33 @@ class LittleDuckListener(ParseTreeListener):
     # Exit a parse tree produced by LittleDuckParser#exp.
     def exitExp(self, ctx:LittleDuckParser.ExpContext):
         # Manejo de + y -
-        print("chiild count exp", ctx.getChildCount())
-        if ctx.getChildCount() > 1:
+        print("exp count", ctx.getChildCount())
+        if ctx.getChildCount() != 1:
             # Se extrae operador y se resuelve si hay otros con la misma jerarquia
-            for child in ctx.getChildren():
+      
+            for i in range(ctx.getChildCount() -1):
+                child = ctx.getChild(i)
+                print("counter final de exp", child.getChildCount())
                 if child.getText() in ["+", "-"]:
                     self.procesar_operador(child.getText())
                     self.pilaOperadores.append(child.getText()) 
-                elif child.getChildCount() <= 2 and child.getText()[0] != "(":
-                    print("operator child exp -> ", child.getText()[0])
-                    self.pilaOperandos.append(child.getText())
-            
-            print(self.pilaOperandos)
+                elif child.getChildCount() <= 2  and child.getText()[0] != "(":
+                    if(i == ctx.getChildCount()-1):
+                        self.pilaOperandos.append(child.getText())
+                        self.flag = False
+
             self.generar_cuadruplo()
+            # for child in ctx.getChildren():
+            #     print("counter final de exp", child.getChildCount())
+            #     if child.getText() in ["+", "-"]:
+            #         self.procesar_operador(child.getText())
+            #         self.pilaOperadores.append(child.getText()) 
+            #     elif child.getChildCount() <= 2  and child.getText()[0] != "(":
+            #         self.pilaOperandos.append(child.getText())
+            #         self.flag = False
+            #         print(child.getText())
 
-
-            # operador = ctx.getChild(1).getText()
-            # self.pilaOperadores.append(operador) 
-            # self.procesar_operador(operador)
+            # self.generar_cuadruplo()
 
 
     # Enter a parse tree produced by LittleDuckParser#termino.
@@ -380,20 +389,30 @@ class LittleDuckListener(ParseTreeListener):
 
     # Exit a parse tree produced by LittleDuckParser#termino.
     def exitTermino(self, ctx:LittleDuckParser.TerminoContext):
+
         # Manejo de * y /
-        print("chiild count termini", ctx.getChildCount())
         if ctx.getChildCount() > 1:
             # Se extrae operador y se resuelve si hay otros con la misma jerarquia
-            for child in ctx.getChildren():
+            for i in range(ctx.getChildCount()-1):
+                child = ctx.getChild(i)
                 if child.getText() in ["*", "/"]:
                     self.procesar_operador(child.getText())
                     self.pilaOperadores.append(child.getText()) 
                 elif child.getChildCount() <= 2 and child.getText()[0] != "(":
-                    print("operator child termino -> ", child.getText())
-                    self.pilaOperandos.append(child.getText())
-
-            print(self.pilaOperandos)
+                    if(i == ctx.getChildCount()-1):
+                        self.pilaOperandos.append(child.getText())
+                        self.flag = False
             self.generar_cuadruplo()
+
+            # for child in ctx.getChildren():
+            #     if child.getText() in ["*", "/"]:
+            #         self.procesar_operador(child.getText())
+            #         self.pilaOperadores.append(child.getText()) 
+            #     elif child.getChildCount() <= 2 and child.getText()[0] != "(":
+            #         self.pilaOperandos.append(child.getText())
+            # self.generar_cuadruplo()
+
+           
 
     # Enter a parse tree produced by LittleDuckParser#factor.
     def enterFactor(self, ctx:LittleDuckParser.FactorContext):
@@ -401,10 +420,14 @@ class LittleDuckListener(ParseTreeListener):
         if ctx.getChildCount() > 1 and ctx.getChild(0).getText() == '(':  
             self.pilaOperadores.append('(')  
         operando = ctx.getText()
-        if operando[0] != "(":
-            print("operando factor!",operando)
+        print("pre operando -> ", operando, " - ", self.flag)
+        if operando[0] != "(" and self.flag:
+            self.flag = True
             self.pilaOperandos.append(operando)
-            pass
+        
+       
+        print(self.pilaOperandos)
+
 
     # Exit a parse tree produced by LittleDuckParser#factor.
     def exitFactor(self, ctx:LittleDuckParser.FactorContext):
@@ -418,10 +441,12 @@ class LittleDuckListener(ParseTreeListener):
     def exitId_or_cte(self, ctx:LittleDuckParser.Id_or_cteContext):
         if ctx.ID():
             # Obtener tipo de variable desde el diccionario
+            current_child_index = ctx.children.index(ctx.ID()) 
             id_name = ctx.ID().getText()
             variable_type = self.diccionarioFuncsVars.lookup_variable(id_name, self.currentFunction).get("type")
             self.pilaTipos.append(variable_type)
         elif ctx.cte():
+            current_child_index = ctx.children.index(ctx.cte()) 
             if ctx.cte().CTE_INT():
                 self.pilaTipos.append("int")
             else:
