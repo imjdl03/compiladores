@@ -13,12 +13,13 @@ class Memory:
             "temp": {
                 "int": (3000, 3499),
                 "float": (3500, 3999),
+                "bool": (4000, 4500)
             },
         }
         self.next_address = {
             "global": {"int": 1000, "float": 1500},
             "constant": {"int": 2000, "float": 2500},
-            "temp": {"int": 3000, "float": 3500},
+            "temp": {"int": 3000, "float": 3500, "bool": 4000},
         }
 
     def get_next_address(self, segment, data_type):

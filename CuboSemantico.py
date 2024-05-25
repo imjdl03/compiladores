@@ -144,6 +144,7 @@ class CuboSemantico:
         }
 
     def check_operation(self, operator, typeIzq, typeDer):
+        print(typeIzq, " - ",operator ," - ", typeDer) 
         if operator in self.cuboSemantico:
             if typeIzq in self.cuboSemantico[operator]:
                 if typeDer in self.cuboSemantico[operator][typeIzq]:
@@ -151,5 +152,4 @@ class CuboSemantico:
         return None  # Operación no válida
     
     def check_assignment(self, left_type, right_type):
-        """Verifica si la asignación de 'right_type' a 'left_type' es válida."""
         return self.cuboSemantico['='][left_type][right_type]

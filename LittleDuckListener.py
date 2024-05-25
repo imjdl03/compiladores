@@ -48,9 +48,15 @@ class LittleDuckListener(ParseTreeListener):
         if resultado_tipo is None:
             raise Exception(f"Error de tipos: {tipoIzq} {operador} {tipoDer} no es una operación válida.")
 
+        
         resultado = self.generar_temporal()
+        print("tipo resultado  - > ", resultado_tipo)
         temp_address = self.memory.store(-1, resultado_tipo, "temp")
+        print("hey!")
+
         self.diccionarioFuncsVars.update_variable_address(resultado, temp_address, "temp")
+
+
 
         # Push the result address onto the stack
         self.pilaOperandos.append(temp_address)  
@@ -322,7 +328,8 @@ class LittleDuckListener(ParseTreeListener):
 
     # Exit a parse tree produced by LittleDuckParser#printList.
     def exitPrintList(self, ctx:LittleDuckParser.PrintListContext):
-        self.listaCuadruplos.append(Cuadruplo("PRINT", "-", "-", self.pilaOperandos.pop()))
+        print_result =  self.pilaOperandos.pop()
+        self.listaCuadruplos.append(Cuadruplo("PRINT", "-", "-", print_result))
 
     # Enter a parse tree produced by LittleDuckParser#printList_tail.
     def enterPrintList_tail(self, ctx:LittleDuckParser.PrintList_tailContext):
@@ -346,7 +353,6 @@ class LittleDuckListener(ParseTreeListener):
             self.pilaOperadores.append(operador) 
             self.procesar_operador(operador)
             result = self.pilaOperandos[-1]
-            # self.pilaOperandos.append(result)
 
             # Generacion de cuadruplo GOTOF para condicional
             if self.insideIf:
@@ -381,11 +387,15 @@ class LittleDuckListener(ParseTreeListener):
                 elif child.getChildCount() <= 2  and child.getText()[0] != "(":
                     if(i == ctx.getChildCount()-1):
                         operando = child.getText()
-                        data_type = "int" # pendiente agregar validacion de float
+                        if ctx.termino().id_or_cte().cte().CTE_INT():
+                            data_type = "int"
+                        else:  # Assuming it's a float if not an int
+                            data_type = "float"
                         address = self.memory.store(operando, data_type, "constant")
                         self.pilaOperandos.append(address)
                         # self.pilaOperandos.append(child.getText())
                         self.flag = False
+                        print("exp")
 
             self.generar_cuadruplo()
 
@@ -407,11 +417,16 @@ class LittleDuckListener(ParseTreeListener):
                 elif child.getChildCount() <= 2 and child.getText()[0] != "(":
                     if(i == ctx.getChildCount()-1):
                         operando = child.getText()
-                        data_type = "int" # pendiente agregar validacion de float
+                        if ctx.factor().id_or_cte().cte().CTE_INT():
+                            data_type = "int"
+                        else:  # Assuming it's a float if not an int
+                            data_type = "float"
                         address = self.memory.store(operando, data_type, "constant")
                         self.pilaOperandos.append(address)
                         # self.pilaOperandos.append(child.getText())
                         self.flag = False
+                        print("termino")
+
 
             self.generar_cuadruplo()
 
@@ -435,10 +450,13 @@ class LittleDuckListener(ParseTreeListener):
 
             else:  
                 # Guardando contante en memoria y en operando
-                data_type = "int"
+                if ctx.id_or_cte().cte().CTE_INT():
+                    data_type = "int"
+                else:  # Assuming it's a float if not an int
+                    data_type = "float"
                 address = self.memory.store(operando, data_type, "constant")
                 self.pilaOperandos.append(address)
-
+                print("factor")
 
     # Exit a parse tree produced by LittleDuckParser#factor.
     def exitFactor(self, ctx:LittleDuckParser.FactorContext):

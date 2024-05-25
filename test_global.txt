@@ -1,8 +1,14 @@
 program myProgram;
 var
-a,b: float;
+a,b,: float;
+c,d: int;
 
 main {
-   a = 2.8 + 2;
+    if(a+b>b){
+        print(c)
+    }else{
+        print(5*2)    
+    }
+    print(5+2)
     }
 end
