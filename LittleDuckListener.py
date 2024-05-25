@@ -3,6 +3,7 @@ from antlr4 import *
 from CuboSemantico import CuboSemantico
 from Cuadruplo import Cuadruplo
 from DiccionarioFuncsVars import DiccionarioFuncsVars
+from Memory import Memory
 
 if "." in __name__:
     from .LittleDuckParser import LittleDuckParser
@@ -14,6 +15,7 @@ class LittleDuckListener(ParseTreeListener):
     def __init__(self):  # Constructor
         self.cuboSemantico = CuboSemantico()
         self.diccionarioFuncsVars = DiccionarioFuncsVars()
+        self.memory = Memory()
         self.currentFunction = None
         self.listaCuadruplos = []  
         self.pilaOperadores = []  
@@ -120,6 +122,12 @@ class LittleDuckListener(ParseTreeListener):
                 else:
                     self.diccionarioFuncsVars.insert_variable(varName, varType, scope="global")
 
+                # Guardando variable vacia en memoria
+                initial_value = -1  # You might need to get this from elsewhere
+                address = self.memory.store(initial_value, varType, "global")
+                self.diccionarioFuncsVars.update_variable_address(varName, address, scope="global")
+
+
             # Llamamos recursivamente la funcion para iterar los otros posibles nodos con IDs de variables
             if id_list_ctx.id_list_vars():
                 process_id_list_vars(id_list_ctx.id_list_vars())
@@ -192,6 +200,14 @@ class LittleDuckListener(ParseTreeListener):
         # Revisión de compatibilidad de tipos en asignacion
         if not self.cuboSemantico.check_assignment(left_type, right_type):
             raise Exception(f"Error de tipos: No se puede asignar '{right_type}' a '{left_type}'")
+        
+        variable_info = self.diccionarioFuncsVars.lookup_variable(id_name, self.currentFunction)
+        if variable_info:
+            address = variable_info.get("address")
+
+            # Store the value in memory
+            self.memory.update_value(result, address=address)  # Use the existing address
+
 
         self.listaCuadruplos.append(Cuadruplo("=", result, "-", id_name))
 
@@ -354,13 +370,11 @@ class LittleDuckListener(ParseTreeListener):
     # Exit a parse tree produced by LittleDuckParser#exp.
     def exitExp(self, ctx:LittleDuckParser.ExpContext):
         # Manejo de + y -
-        print("exp count", ctx.getChildCount())
         if ctx.getChildCount() != 1:
             # Se extrae operador y se resuelve si hay otros con la misma jerarquia
       
             for i in range(ctx.getChildCount() -1):
                 child = ctx.getChild(i)
-                print("counter final de exp", child.getChildCount())
                 if child.getText() in ["+", "-"]:
                     self.procesar_operador(child.getText())
                     self.pilaOperadores.append(child.getText()) 
@@ -370,17 +384,6 @@ class LittleDuckListener(ParseTreeListener):
                         self.flag = False
 
             self.generar_cuadruplo()
-            # for child in ctx.getChildren():
-            #     print("counter final de exp", child.getChildCount())
-            #     if child.getText() in ["+", "-"]:
-            #         self.procesar_operador(child.getText())
-            #         self.pilaOperadores.append(child.getText()) 
-            #     elif child.getChildCount() <= 2  and child.getText()[0] != "(":
-            #         self.pilaOperandos.append(child.getText())
-            #         self.flag = False
-            #         print(child.getText())
-
-            # self.generar_cuadruplo()
 
 
     # Enter a parse tree produced by LittleDuckParser#termino.
@@ -404,29 +407,15 @@ class LittleDuckListener(ParseTreeListener):
                         self.flag = False
             self.generar_cuadruplo()
 
-            # for child in ctx.getChildren():
-            #     if child.getText() in ["*", "/"]:
-            #         self.procesar_operador(child.getText())
-            #         self.pilaOperadores.append(child.getText()) 
-            #     elif child.getChildCount() <= 2 and child.getText()[0] != "(":
-            #         self.pilaOperandos.append(child.getText())
-            # self.generar_cuadruplo()
-
-           
-
     # Enter a parse tree produced by LittleDuckParser#factor.
     def enterFactor(self, ctx:LittleDuckParser.FactorContext):
         # Manejode ID, CTE o expresión entre parentesis
         if ctx.getChildCount() > 1 and ctx.getChild(0).getText() == '(':  
             self.pilaOperadores.append('(')  
         operando = ctx.getText()
-        print("pre operando -> ", operando, " - ", self.flag)
         if operando[0] != "(" and self.flag:
             self.flag = True
             self.pilaOperandos.append(operando)
-        
-       
-        print(self.pilaOperandos)
 
 
     # Exit a parse tree produced by LittleDuckParser#factor.
@@ -441,12 +430,10 @@ class LittleDuckListener(ParseTreeListener):
     def exitId_or_cte(self, ctx:LittleDuckParser.Id_or_cteContext):
         if ctx.ID():
             # Obtener tipo de variable desde el diccionario
-            current_child_index = ctx.children.index(ctx.ID()) 
             id_name = ctx.ID().getText()
             variable_type = self.diccionarioFuncsVars.lookup_variable(id_name, self.currentFunction).get("type")
             self.pilaTipos.append(variable_type)
         elif ctx.cte():
-            current_child_index = ctx.children.index(ctx.cte()) 
             if ctx.cte().CTE_INT():
                 self.pilaTipos.append("int")
             else:

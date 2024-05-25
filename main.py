@@ -9,7 +9,7 @@ from LittleDuckParser import LittleDuckParser
 from LittleDuckListener import LittleDuckListener
 
 # Obteniendo contenido de archivos de pruebas
-test_case = "tests_cuadruplos/test5.txt"
+test_case = "test_global.txt"
 with open(test_case, 'r') as file:
     file_content = file.read()
 
@@ -43,6 +43,7 @@ try:
     #print("Diccionario de funciones => ", funcs_dict)
     #print("----------------------------------------------------------------------------")
     #print("Diccionario de variables globales => ", variables_dict)
+    print("Memory -> ", listener.memory.data)
 
 except Exception as e:
     print(f"Error: {e}")

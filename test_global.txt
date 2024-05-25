@@ -1,0 +1,9 @@
+program myProgram;
+var
+a,b: float;
+
+main {
+   a = 2;
+   b = 5;
+    }
+end

@@ -42,21 +42,26 @@ class DiccionarioFuncsVars:
     def lookup_function(self, name):
         return self.functions.get(name)
     
+    # Metodo para buscar si una variable ya fue declarada
     def lookup_variable(self, var_name, current_function=None):
-        """Busca una variable en el diccionario, primero en el ámbito local (función actual) 
-        y luego en el ámbito global."""
-
-        # Buscar en el ámbito local (función)
+        # Buscar en el localmente
         if current_function:
             function_vars = self.functions.get(current_function, {}).get("vars", {})
             variable_info = function_vars.get(var_name)
             if variable_info:
                 return variable_info
 
-        # Buscar en el ámbito global
+        # Buscar globalmente
         variable_info = self.variables.get(var_name)
         if variable_info:
             return variable_info
 
-        # Si no se encuentra, lanzar una excepción
         raise Exception(f"Error: Variable '{var_name}' no declarada.")
+
+    def update_variable_address(self, varName, address, scope="global"):
+        if scope == "global":
+            # Update in the global variable table
+            if varName in self.variables:
+                self.variables[varName]["address"] = address
+            else:
+                raise Exception(f"Error: Variable '{varName}' not found in global scope")
