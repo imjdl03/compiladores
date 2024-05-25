@@ -144,7 +144,6 @@ class CuboSemantico:
         }
 
     def check_operation(self, operator, typeIzq, typeDer):
-        print(typeIzq, " - ",operator ," - ", typeDer) 
         if operator in self.cuboSemantico:
             if typeIzq in self.cuboSemantico[operator]:
                 if typeDer in self.cuboSemantico[operator][typeIzq]:

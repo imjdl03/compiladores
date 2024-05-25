@@ -5,7 +5,7 @@ a,x: float;
 main {
     a = a*10.67;
     do{
-        x = a;
+        x = a+2;
         a = x - 10;
         }
     while(a > 100);

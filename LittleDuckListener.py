@@ -50,9 +50,7 @@ class LittleDuckListener(ParseTreeListener):
 
         
         resultado = self.generar_temporal()
-        print("tipo resultado  - > ", resultado_tipo)
         temp_address = self.memory.store(-1, resultado_tipo, "temp")
-        print("hey!")
 
         self.diccionarioFuncsVars.update_variable_address(resultado, temp_address, "temp")
 
@@ -225,30 +223,35 @@ class LittleDuckListener(ParseTreeListener):
     # Exit a parse tree produced by LittleDuckParser#condition.
     def exitCondition(self, ctx:LittleDuckParser.ConditionContext):
         # Resolviendo cuadruplo GOTOF de condicional sin estatuto else
-        if ctx.conditionElse().getText() == "":
-            gotof_pos = self.pilaSaltos.pop()
-            self.listaCuadruplos[gotof_pos].resultado = len(self.listaCuadruplos) +1     
+        gotof_pos = self.pilaSaltos.pop()
+        self.listaCuadruplos[gotof_pos].resultado = len(self.listaCuadruplos) +1
         self.insideIf = False     
        
     # Enter a parse tree produced by LittleDuckParser#conditionElse.
     def enterConditionElse(self, ctx:LittleDuckParser.ConditionElseContext):
         # Generación de cuadruplos para estatuto else
-        if(ctx.getText() != ""):
-            # Resolviendo cuadruplo de IF principal
-            gotof_pos = self.pilaSaltos.pop()
-            self.listaCuadruplos[gotof_pos].resultado = len(self.listaCuadruplos)+2
-
+        if ctx.getText() != "":
             # Generando cuadruplo GOTO de estatuto ELSE
             gotof_quadruple = Cuadruplo("GOTO", "-", "-", "-")
             self.listaCuadruplos.append(gotof_quadruple)
+
+             # Sacnado pos de cuad pendiente de IF
+            gotof_pos = self.pilaSaltos.pop()
+
+            # Agregamos salto pendiente de goto
             self.pilaSaltos.append(len(self.listaCuadruplos) - 1)  
+
+            # Resolvemos gotof de if            
+            self.listaCuadruplos[gotof_pos].resultado = len(self.listaCuadruplos)+1
+
 
     # Exit a parse tree produced by LittleDuckParser#conditionElse.
     def exitConditionElse(self, ctx:LittleDuckParser.ConditionElseContext):
         # Resolviendo cuadruplo GOTO de estatuto ELSE
-        if ctx.getText() != "":
-            goto_pos = self.pilaSaltos.pop()
-            self.listaCuadruplos[goto_pos].resultado = len(self.listaCuadruplos) +1
+        # if ctx.getText() != "":
+        #     goto_pos = self.pilaSaltos.pop()
+        #     self.listaCuadruplos[goto_pos].resultado = len(self.listaCuadruplos) -1
+        pass
         
 
     # Enter a parse tree produced by LittleDuckParser#cycle.
@@ -395,7 +398,6 @@ class LittleDuckListener(ParseTreeListener):
                         self.pilaOperandos.append(address)
                         # self.pilaOperandos.append(child.getText())
                         self.flag = False
-                        print("exp")
 
             self.generar_cuadruplo()
 
@@ -425,8 +427,6 @@ class LittleDuckListener(ParseTreeListener):
                         self.pilaOperandos.append(address)
                         # self.pilaOperandos.append(child.getText())
                         self.flag = False
-                        print("termino")
-
 
             self.generar_cuadruplo()
 
@@ -456,7 +456,6 @@ class LittleDuckListener(ParseTreeListener):
                     data_type = "float"
                 address = self.memory.store(operando, data_type, "constant")
                 self.pilaOperandos.append(address)
-                print("factor")
 
     # Exit a parse tree produced by LittleDuckParser#factor.
     def exitFactor(self, ctx:LittleDuckParser.FactorContext):

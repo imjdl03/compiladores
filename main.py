@@ -43,7 +43,7 @@ try:
     #print("Diccionario de funciones => ", funcs_dict)
     #print("----------------------------------------------------------------------------")
     #print("Diccionario de variables globales => ", variables_dict)
-    print("Memory -> ", listener.memory.data)
+    print("Memory -> ", listener.memory.get_data_by_segment())
 
 except Exception as e:
     print(f"Error: {e}")

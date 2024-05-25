@@ -51,3 +51,15 @@ class Memory:
             return self.data[address]
         else:
             raise MemoryError(f"Value not found at address {address}")
+            
+    def get_data_by_segment(self):
+        segmented_data = {segment: {} for segment in self.adresses_segments}
+
+        for address, value in self.data.items():
+            for segment, types in self.adresses_segments.items():
+                for data_type, (start, end) in types.items():
+                    if start <= address <= end:
+                        segmented_data[segment].setdefault(data_type, {})[address] = value
+                        break  # Found the segment, stop inner loops
+
+        return segmented_data
