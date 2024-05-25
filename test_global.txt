@@ -3,7 +3,6 @@ var
 a,b: float;
 
 main {
-   a = 2;
-   b = 5;
+   a = 2.8 + 2;
     }
 end
