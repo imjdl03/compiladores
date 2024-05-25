@@ -3,7 +3,7 @@
 # Este codigo corresponde a la llamada del lexer y parser generado por el archivo LittleDuck.g4 para
 # analizar los textos que le demos como entrada para despues identificar si contiene errores o no.
 
-from antlr4 import *
+from antlr4 import * # type: ignore
 from LittleDuckLexer import LittleDuckLexer
 from LittleDuckParser import LittleDuckParser
 from LittleDuckListener import LittleDuckListener

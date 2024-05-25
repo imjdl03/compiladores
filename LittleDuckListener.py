@@ -1,5 +1,5 @@
 # Generated from LittleDuck.g4 by ANTLR 4.13.1
-from antlr4 import *
+from antlr4 import * # type: ignore
 from CuboSemantico import CuboSemantico
 from Cuadruplo import Cuadruplo
 from DiccionarioFuncsVars import DiccionarioFuncsVars
@@ -31,6 +31,26 @@ class LittleDuckListener(ParseTreeListener):
         temporal = f"t{self.contador}"
         self.contador += 1
         return temporal
+    
+    def get_operator_code(self, operator):
+        operator_codes = {
+        "+": 1,
+        "-": 2,
+        "*": 3,
+        "/": 4,
+        "=": 5,  
+        "<": 6,
+        ">": 7,
+        "<=": 8,
+        ">=": 9,
+        "==": 10,
+        "!=": 11,
+        "GOTO": 12,
+        "GOTOF": 13,
+        "GOTOV": 14,
+        "PRINT": 15,
+        }
+        return operator_codes.get(operator, None)
 
     # Funcion auxiliar para generar cuadruplos
     def generar_cuadruplo(self):
@@ -54,13 +74,12 @@ class LittleDuckListener(ParseTreeListener):
 
         self.diccionarioFuncsVars.update_variable_address(resultado, temp_address, "temp")
 
-
-
         # Push the result address onto the stack
         self.pilaOperandos.append(temp_address)  
         self.pilaTipos.append(resultado_tipo)
 
-        cuadruplo = Cuadruplo(operador, op1, op2, temp_address)
+        operator = self.get_operator_code(operador)
+        cuadruplo = Cuadruplo(operator, op1, op2, temp_address)
         self.listaCuadruplos.append(cuadruplo)
 
     # Funcion auxiliar para procesar expresiones y controlar orden de precedencia
@@ -213,8 +232,8 @@ class LittleDuckListener(ParseTreeListener):
             # Store the value in memory
             self.memory.update_value(result, address=address)  # Use the existing address
 
-
-        self.listaCuadruplos.append(Cuadruplo("=", result, "-", address))
+        operator = self.get_operator_code("=")
+        self.listaCuadruplos.append(Cuadruplo(operator, result, None, address))
 
     # Enter a parse tree produced by LittleDuckParser#condition.
     def enterCondition(self, ctx:LittleDuckParser.ConditionContext):
@@ -232,7 +251,8 @@ class LittleDuckListener(ParseTreeListener):
         # Generación de cuadruplos para estatuto else
         if ctx.getText() != "":
             # Generando cuadruplo GOTO de estatuto ELSE
-            gotof_quadruple = Cuadruplo("GOTO", "-", "-", "-")
+            operator = self.get_operator_code("GOTO")
+            gotof_quadruple = Cuadruplo(operator, None, None, None)
             self.listaCuadruplos.append(gotof_quadruple)
 
              # Sacnado pos de cuad pendiente de IF
@@ -263,7 +283,8 @@ class LittleDuckListener(ParseTreeListener):
         # Resolviendo estatuto GOTOV con salto pendiente de inicio de ciclo
         etiqueta_inicio = self.pilaSaltos.pop()+1
         exp = self.pilaOperandos.pop()
-        self.listaCuadruplos.append(Cuadruplo("GOTOV", exp, "-", etiqueta_inicio)) 
+        operator = self.get_operator_code("GOTOV")
+        self.listaCuadruplos.append(Cuadruplo(operator, exp, None, etiqueta_inicio)) 
 
     # Enter a parse tree produced by LittleDuckParser#body.
     def enterBody(self, ctx:LittleDuckParser.BodyContext):
@@ -332,7 +353,8 @@ class LittleDuckListener(ParseTreeListener):
     # Exit a parse tree produced by LittleDuckParser#printList.
     def exitPrintList(self, ctx:LittleDuckParser.PrintListContext):
         print_result =  self.pilaOperandos.pop()
-        self.listaCuadruplos.append(Cuadruplo("PRINT", "-", "-", print_result))
+        operator = self.get_operator_code("PRINT")
+        self.listaCuadruplos.append(Cuadruplo(operator, None, None, print_result))
 
     # Enter a parse tree produced by LittleDuckParser#printList_tail.
     def enterPrintList_tail(self, ctx:LittleDuckParser.PrintList_tailContext):
@@ -359,7 +381,8 @@ class LittleDuckListener(ParseTreeListener):
 
             # Generacion de cuadruplo GOTOF para condicional
             if self.insideIf:
-                gotof_quadruple = Cuadruplo("GOTOF", result, "-", "-")
+                operator = self.get_operator_code("GOTOF")
+                gotof_quadruple = Cuadruplo(operator, result, None, None)
                 self.listaCuadruplos.append(gotof_quadruple)
                 self.pilaSaltos.append(len(self.listaCuadruplos) - 1)   
 
