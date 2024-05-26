@@ -38,7 +38,10 @@ class Memory:
 
     def store(self, value, data_type="int", segment="global"):
         address = self.get_next_address(segment, data_type)
-        self.data[address] = value
+        if data_type == "int":
+            self.data[address] = int(value)
+        else:
+            self.data[address] = float(value)
         return address
     
     def update_value(self, value, address):

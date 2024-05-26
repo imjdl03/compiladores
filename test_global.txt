@@ -4,9 +4,8 @@ a,b,: float;
 c,d: int;
 
 main {
-    if(a+b>b){
-        print(c+2*d)
-    };
-    print(a+b)
-    }
+    a = 2;
+    b = 3;
+    print(a+b);
+}
 end

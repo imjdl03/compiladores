@@ -7,9 +7,13 @@ from antlr4 import * # type: ignore
 from LittleDuckLexer import LittleDuckLexer
 from LittleDuckParser import LittleDuckParser
 from LittleDuckListener import LittleDuckListener
+from Memory import Memory
+import pickle
+from VirtualMachine import VirtualMachine
+
 
 # Obteniendo contenido de archivos de pruebas
-test_case = "test_global.txt"
+test_case = "tests_cuadruplos/test4.txt"
 with open(test_case, 'r') as file:
     file_content = file.read()
 
@@ -33,17 +37,21 @@ try:
     variables_dict = listener.diccionarioFuncsVars.variables
     funcs_dict = listener.diccionarioFuncsVars.functions
 
-    #print("Operadores => ", listener.pilaOperadores)
-    #print("Operandos => ", listener.pilaOperandos)
     for index, cuadruplo in enumerate(listener.listaCuadruplos):
         print(index+1, ".- ", cuadruplo.operador, cuadruplo.operandoIzq, cuadruplo.operandoDer, cuadruplo.resultado)
-
-    #print("Pila de tipos", listener.pilaTipos)
-
-    #print("Diccionario de funciones => ", funcs_dict)
-    #print("----------------------------------------------------------------------------")
-    #print("Diccionario de variables globales => ", variables_dict)
+     
     print("Memory -> ", listener.memory.get_data_by_segment())
+
+    # guardando cuadruplos y contenido de memoria en archivo .obj
+    data = {
+        "quads": listener.listaCuadruplos,
+        "memory": listener.memory.data,
+    }
+    with open("test_file.obj", "wb") as f:
+        pickle.dump(data, f)
+
+    vm = VirtualMachine()
+    vm.run()
 
 except Exception as e:
     print(f"Error: {e}")

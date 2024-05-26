@@ -4,6 +4,9 @@ x,z,y: int;
 a: float;
 
 main {
+    a = 1;
+    z = 2;
+    
     print(2*a);
     x = 6*(3+2*z);
     print(x +1);
