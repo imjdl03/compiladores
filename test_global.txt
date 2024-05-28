@@ -6,15 +6,15 @@ main {
     a = 10
     do{
         if (a > 8){
-            print(2+4)
+            print(2+4);
         }else{
-            print(2+1)
-        }
+            print(2+1);
+        };
         a = a - 1;
-        print(a)
+        print("hola");
         }
     while(a > 5);
     a = 2*1+(3+2);
-    print(a)
+    print(a);
     }
 end

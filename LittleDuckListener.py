@@ -370,13 +370,11 @@ class LittleDuckListener(ParseTreeListener):
 
     # Exit a parse tree produced by LittleDuckParser#printList.
     def exitPrintList(self, ctx:LittleDuckParser.PrintListContext):
-        print("cte string", ctx.CTE_STRING())
         if ctx.CTE_STRING() == None:
             print_result =  self.pilaOperandos.pop()
             operator = self.get_operator_code("PRINT")
             self.listaCuadruplos.append(Cuadruplo(operator, None, None, print_result))
         else:
-            print("hey")
             constante = ctx.CTE_STRING().getText()
             address = self.memory.store(constante, "string", "constant")
             operator = self.get_operator_code("PRINT")
@@ -484,7 +482,6 @@ class LittleDuckListener(ParseTreeListener):
                     data_type = "float"
 
                 address = self.memory.store(operando, data_type, "constant")
-                print("returned address -> ", address)
                 self.pilaOperandos.append(address)
 
 

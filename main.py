@@ -34,16 +34,16 @@ try:
     walker = ParseTreeWalker()
     walker.walk(listener, tree) 
 
-    variables_dict = listener.diccionarioFuncsVars.variables
-    funcs_dict = listener.diccionarioFuncsVars.functions
+    # variables_dict = listener.diccionarioFuncsVars.variables
+    # funcs_dict = listener.diccionarioFuncsVars.functions
     # print("Variables dict  -> ", variables_dict)
     # print("funcs dict  -> ", funcs_dict)
 
     # for index, cuadruplo in enumerate(listener.listaCuadruplos):
     #     print(index+1, ".- ", cuadruplo.operador, cuadruplo.operandoIzq, cuadruplo.operandoDer, cuadruplo.resultado)
      
-    print("Memory -> ", listener.memory.get_data_by_segment())
-    print("Operandos -> ", listener.pilaOperandos)
+    # print("Memory -> ", listener.memory.get_data_by_segment())
+    # print("Operandos -> ", listener.pilaOperandos)
 
     # guardando cuadruplos y contenido de memoria en archivo .obj
     data = {

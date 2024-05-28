@@ -17,8 +17,8 @@ class VirtualMachine:
         memory = Memory()
         memory.data = data["memory"]  # Restore the data dictionary
 
-        for index, cuadruplo in enumerate(cuadruplos):
-            print(index+1, ".- ", cuadruplo.operador, cuadruplo.operandoIzq, cuadruplo.operandoDer, cuadruplo.resultado)
+        # for index, cuadruplo in enumerate(cuadruplos):
+        #     print(index+1, ".- ", cuadruplo.operador, cuadruplo.operandoIzq, cuadruplo.operandoDer, cuadruplo.resultado)
         return cuadruplos, memory
     
 
@@ -28,7 +28,7 @@ class VirtualMachine:
             self.execute(cuad)
             self.ip += 1
 
-        print("memory execution -> ", self.memory.get_data_by_segment())
+        # print("memory execution -> ", self.memory.get_data_by_segment())
 
     def execute(self, cuad):
         op, left_addr, right_addr, result_addr = (
