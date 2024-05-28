@@ -1,11 +1,14 @@
 program myProgram;
 var
-a,b,: float;
-c,d: int;
+a,x: float;
 
 main {
-    a = 2;
-    b = 3;
-    print(a+b);
-}
+    a = 10;
+    do{
+        if (a > 8){
+            print(2+4);
+        }
+        }
+    while(a > 5);
+    }
 end

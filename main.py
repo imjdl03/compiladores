@@ -13,7 +13,7 @@ from VirtualMachine import VirtualMachine
 
 
 # Obteniendo contenido de archivos de pruebas
-test_case = "tests_cuadruplos/test4.txt"
+test_case = "test_global.txt"
 with open(test_case, 'r') as file:
     file_content = file.read()
 
@@ -36,22 +36,25 @@ try:
 
     variables_dict = listener.diccionarioFuncsVars.variables
     funcs_dict = listener.diccionarioFuncsVars.functions
+    # print("Variables dict  -> ", variables_dict)
+    # print("funcs dict  -> ", funcs_dict)
 
     for index, cuadruplo in enumerate(listener.listaCuadruplos):
         print(index+1, ".- ", cuadruplo.operador, cuadruplo.operandoIzq, cuadruplo.operandoDer, cuadruplo.resultado)
      
     print("Memory -> ", listener.memory.get_data_by_segment())
+    print("Operandos -> ", listener.pilaOperandos)
 
     # guardando cuadruplos y contenido de memoria en archivo .obj
-    data = {
-        "quads": listener.listaCuadruplos,
-        "memory": listener.memory.data,
-    }
-    with open("test_file.obj", "wb") as f:
-        pickle.dump(data, f)
+    # data = {
+    #     "quads": listener.listaCuadruplos,
+    #     "memory": listener.memory.data,
+    # }
+    # with open("test_file.obj", "wb") as f:
+    #     pickle.dump(data, f)
 
-    vm = VirtualMachine()
-    vm.run()
+    # vm = VirtualMachine()
+    # vm.run()
 
 except Exception as e:
     print(f"Error: {e}")

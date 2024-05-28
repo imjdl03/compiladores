@@ -90,10 +90,12 @@ expression : exp (operador exp)? ;  // Opcional: operador y otro exp
 operador   : '>' | '<' | '!=' | '>=' ;  // Sin recursión 
 
 // EXP -----------------------------------------------------------------------------------------
-exp : termino (('+' | '-') termino)* ; // Recursión a la derecha con operadores + y -
+exp : termino (operador_exp termino)* ; // Recursión a la derecha con operadores + y -
+operador_exp   : '+' | '-' ;
 
 // TERMINO --------------------------------------------------------------------------------------
-termino : factor (('*' | '/') factor)* ; // Recursión a la derecha con * y /
+termino : factor (operador_termino factor)* ; // Recursión a la derecha con * y /
+operador_termino   : '*' | '/' ;
 
 // FACTOR ---------------------------------------------------------------------------------------
 factor : '(' expression ')'
