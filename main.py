@@ -34,17 +34,19 @@ try:
     walker = ParseTreeWalker()
     walker.walk(listener, tree) 
 
-    # variables_dict = listener.diccionarioFuncsVars.variables
+    print("Compiled!")
+    print("--------------------------------------------------------------")
+    
     # funcs_dict = listener.diccionarioFuncsVars.functions
-    # print("Variables dict  -> ", variables_dict)
-    # print("funcs dict  -> ", funcs_dict)
+    # print("Variables dict  -> ",  listener.diccionarioFuncsVars.variables)
+    # print("funcs dict  -> ", listener.diccionarioFuncsVars.functions)
+    # print("Memory -> ", listener.memory.get_data_by_segment())
+    # print("Operandos -> ", listener.pilaOperandos)
 
     # for index, cuadruplo in enumerate(listener.listaCuadruplos):
     #     print(index+1, ".- ", cuadruplo.operador, cuadruplo.operandoIzq, cuadruplo.operandoDer, cuadruplo.resultado)
      
-    # print("Memory -> ", listener.memory.get_data_by_segment())
-    # print("Operandos -> ", listener.pilaOperandos)
-
+  
     # guardando cuadruplos y contenido de memoria en archivo .obj
     data = {
         "quads": listener.listaCuadruplos,
@@ -53,6 +55,7 @@ try:
     with open("test_file.obj", "wb") as f:
         pickle.dump(data, f)
 
+    # Corriento maquina virtual que ejecuta contenido del archivo .obj
     vm = VirtualMachine()
     vm.run()
 

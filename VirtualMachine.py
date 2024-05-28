@@ -3,33 +3,31 @@ import pickle
 from Cuadruplo import Cuadruplo
 from Memory import Memory
 
-
 class VirtualMachine:
     def __init__(self, filename="test_file.obj"):
         self.cuadruplos, self.memory = self.load_from_obj("test_file.obj")
         self.ip = 0  
         self.jump_stack = []
 
+    # Funcion para leer archivo .obj
     def load_from_obj(self, filename):
         with open(filename, "rb") as f:
             data = pickle.load(f)
         cuadruplos = data["quads"]
         memory = Memory()
-        memory.data = data["memory"]  # Restore the data dictionary
+        memory.data = data["memory"]
 
-        # for index, cuadruplo in enumerate(cuadruplos):
-        #     print(index+1, ".- ", cuadruplo.operador, cuadruplo.operandoIzq, cuadruplo.operandoDer, cuadruplo.resultado)
         return cuadruplos, memory
     
 
+    # Funcion para recorrer los cuadruplos del archivo obj
     def run(self):
         while 0 <= self.ip < len(self.cuadruplos):
             cuad = self.cuadruplos[self.ip]
             self.execute(cuad)
             self.ip += 1
 
-        # print("memory execution -> ", self.memory.get_data_by_segment())
-
+    # Funcion que ejecuta las operaciones de cada cuadruplo
     def execute(self, cuad):
         op, left_addr, right_addr, result_addr = (
             cuad.operador,
@@ -40,8 +38,6 @@ class VirtualMachine:
 
         left_val = self.memory.load(left_addr) if left_addr is not None else None
         right_val = self.memory.load(right_addr) if right_addr is not None else None
-        # print(left_addr, op, right_addr)
-
 
         match op:
             case 1:  # "+"

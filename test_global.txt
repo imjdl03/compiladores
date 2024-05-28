@@ -3,18 +3,7 @@ var
 a,x: float;
 
 main {
-    a = 10
-    do{
-        if (a > 8){
-            print(2+4);
-        }else{
-            print(2+1);
-        };
-        a = a - 1;
-        print("hola");
-        }
-    while(a > 5);
-    a = 2*1+(3+2);
-    print(a);
+    a = 10;
+    print("hola");
     }
 end
