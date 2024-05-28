@@ -83,7 +83,7 @@ class VirtualMachine:
                     self.ip = result_addr - 2
                 return
             case 15:  # "PRINT"
-                print("print", self.memory.load(result_addr) ) # Assuming you want to print the left operand
+                print(self.memory.load(result_addr) ) # Assuming you want to print the left operand
                 return  # No need to store a result
             case _:
                 raise ValueError(f"Unknown operation code: {op}")

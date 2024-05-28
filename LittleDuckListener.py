@@ -92,8 +92,12 @@ class LittleDuckListener(ParseTreeListener):
                     '>': 1, '<': 1, '!=': 1, '>=': 1, '<=': 1, '==': 1
                 }
 
-        if self.pilaOperadores and (precedence[operador] <= precedence[self.pilaOperadores[-1]]): 
-            self.generar_cuadruplo()
+        if self.pilaOperadores and (precedence[operador] <= precedence[self.pilaOperadores[-1]]):
+            if self.pilaOperadores[-1] == "(":
+                self.pilaOperadores.pop()
+            else:
+                self.generar_cuadruplo()
+
             
             
 
@@ -451,24 +455,29 @@ class LittleDuckListener(ParseTreeListener):
     # Enter a parse tree produced by LittleDuckParser#factor.
     def enterFactor(self, ctx:LittleDuckParser.FactorContext):
         operando = ctx.getText()
-        if ctx.id_or_cte().ID():
-            id_name = operando
-            variable_info = self.diccionarioFuncsVars.lookup_variable(id_name, self.currentFunction)
-            
-            if variable_info:
-                address = variable_info.get("address")  # Get the variable's address
-                self.pilaOperandos.append(address)
-            else:
-                raise Exception(f"Error: Variable '{id_name}' not declared")
-        else:  
-            # Guardando contante en memoria y en operando
-            if ctx.id_or_cte().cte().CTE_INT() != None:
-                data_type = "int"
-            else: 
-                data_type = "float"
+        print(operando[0])
+        if operando[0] == '(':  
+            self.pilaOperadores.append('(')  
 
-            address = self.memory.store(operando, data_type, "constant")
-            self.pilaOperandos.append(address)
+        if operando[0] != "(" and operando[0] != ")":
+            if ctx.id_or_cte().ID():
+                id_name = operando
+                variable_info = self.diccionarioFuncsVars.lookup_variable(id_name, self.currentFunction)
+                
+                if variable_info:
+                    address = variable_info.get("address")  # Get the variable's address
+                    self.pilaOperandos.append(address)
+                else:
+                    raise Exception(f"Error: Variable '{id_name}' not declared")
+            else:  
+                # Guardando contante en memoria y en operando
+                if ctx.id_or_cte().cte().CTE_INT() != None:
+                    data_type = "int"
+                else: 
+                    data_type = "float"
+
+                address = self.memory.store(operando, data_type, "constant")
+                self.pilaOperandos.append(address)
 
 
     # Exit a parse tree produced by LittleDuckParser#factor.

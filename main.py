@@ -46,15 +46,15 @@ try:
     print("Operandos -> ", listener.pilaOperandos)
 
     # guardando cuadruplos y contenido de memoria en archivo .obj
-    # data = {
-    #     "quads": listener.listaCuadruplos,
-    #     "memory": listener.memory.data,
-    # }
-    # with open("test_file.obj", "wb") as f:
-    #     pickle.dump(data, f)
+    data = {
+        "quads": listener.listaCuadruplos,
+        "memory": listener.memory.data,
+    }
+    with open("test_file.obj", "wb") as f:
+        pickle.dump(data, f)
 
-    # vm = VirtualMachine()
-    # vm.run()
+    vm = VirtualMachine()
+    vm.run()
 
 except Exception as e:
     print(f"Error: {e}")
