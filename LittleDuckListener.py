@@ -370,10 +370,17 @@ class LittleDuckListener(ParseTreeListener):
 
     # Exit a parse tree produced by LittleDuckParser#printList.
     def exitPrintList(self, ctx:LittleDuckParser.PrintListContext):
-        print_result =  self.pilaOperandos.pop()
-        print("print result -> ", print_result)
-        operator = self.get_operator_code("PRINT")
-        self.listaCuadruplos.append(Cuadruplo(operator, None, None, print_result))
+        print("cte string", ctx.CTE_STRING())
+        if ctx.CTE_STRING() == None:
+            print_result =  self.pilaOperandos.pop()
+            operator = self.get_operator_code("PRINT")
+            self.listaCuadruplos.append(Cuadruplo(operator, None, None, print_result))
+        else:
+            print("hey")
+            constante = ctx.CTE_STRING().getText()
+            address = self.memory.store(constante, "string", "constant")
+            operator = self.get_operator_code("PRINT")
+            self.listaCuadruplos.append(Cuadruplo(operator, None, None,address))
 
     # Enter a parse tree produced by LittleDuckParser#printList_tail.
     def enterPrintList_tail(self, ctx:LittleDuckParser.PrintList_tailContext):
@@ -390,9 +397,6 @@ class LittleDuckListener(ParseTreeListener):
 
     # Exit a parse tree produced by LittleDuckParser#expression.
     def exitExpression(self, ctx:LittleDuckParser.ExpressionContext):
-        print("len pila operandos -> ", len(self.pilaOperandos))
-        print("len pila operadores -> ", len(self.pilaOperadores))
-
         if(len(self.pilaOperandos) > 1 and len(self.pilaOperadores) > 0):
             self.generar_cuadruplo()
         result = self.pilaOperandos[-1]
@@ -468,7 +472,7 @@ class LittleDuckListener(ParseTreeListener):
                 variable_info = self.diccionarioFuncsVars.lookup_variable(id_name, self.currentFunction)
                 
                 if variable_info:
-                    address = variable_info.get("address")  # Get the variable's address
+                    address = variable_info.get("address") 
                     self.pilaOperandos.append(address)
                 else:
                     raise Exception(f"Error: Variable '{id_name}' not declared")
@@ -476,11 +480,13 @@ class LittleDuckListener(ParseTreeListener):
                 # Guardando contante en memoria y en operando
                 if ctx.id_or_cte().cte().CTE_INT() != None:
                     data_type = "int"
-                else: 
+                else:
                     data_type = "float"
 
                 address = self.memory.store(operando, data_type, "constant")
+                print("returned address -> ", address)
                 self.pilaOperandos.append(address)
+
 
 
     # Exit a parse tree produced by LittleDuckParser#factor.
@@ -501,8 +507,10 @@ class LittleDuckListener(ParseTreeListener):
         elif ctx.cte():
             if ctx.cte().CTE_INT():
                 self.pilaTipos.append("int")
-            else:
+            elif ctx.cte().CTE_FLOAT():
                 self.pilaTipos.append("float")
+            else:
+                self.pilaTipos.append("string")
         
 
 
