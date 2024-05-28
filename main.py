@@ -40,7 +40,7 @@ try:
     # funcs_dict = listener.diccionarioFuncsVars.functions
     # print("Variables dict  -> ",  listener.diccionarioFuncsVars.variables)
     # print("funcs dict  -> ", listener.diccionarioFuncsVars.functions)
-    # print("Memory -> ", listener.memory.get_data_by_segment())
+    print("Memory -> ", listener.memory.get_data_by_segment())
     # print("Operandos -> ", listener.pilaOperandos)
 
     # for index, cuadruplo in enumerate(listener.listaCuadruplos):
