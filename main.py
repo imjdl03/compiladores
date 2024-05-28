@@ -39,8 +39,8 @@ try:
     # print("Variables dict  -> ", variables_dict)
     # print("funcs dict  -> ", funcs_dict)
 
-    for index, cuadruplo in enumerate(listener.listaCuadruplos):
-        print(index+1, ".- ", cuadruplo.operador, cuadruplo.operandoIzq, cuadruplo.operandoDer, cuadruplo.resultado)
+    # for index, cuadruplo in enumerate(listener.listaCuadruplos):
+    #     print(index+1, ".- ", cuadruplo.operador, cuadruplo.operandoIzq, cuadruplo.operandoDer, cuadruplo.resultado)
      
     print("Memory -> ", listener.memory.get_data_by_segment())
     print("Operandos -> ", listener.pilaOperandos)

@@ -371,6 +371,7 @@ class LittleDuckListener(ParseTreeListener):
     # Exit a parse tree produced by LittleDuckParser#printList.
     def exitPrintList(self, ctx:LittleDuckParser.PrintListContext):
         print_result =  self.pilaOperandos.pop()
+        print("print result -> ", print_result)
         operator = self.get_operator_code("PRINT")
         self.listaCuadruplos.append(Cuadruplo(operator, None, None, print_result))
 
@@ -389,7 +390,7 @@ class LittleDuckListener(ParseTreeListener):
 
     # Exit a parse tree produced by LittleDuckParser#expression.
     def exitExpression(self, ctx:LittleDuckParser.ExpressionContext):
-        if(len(self.pilaOperandos) > 1):
+        if(len(self.pilaOperandos) > 2):
             self.generar_cuadruplo()
         result = self.pilaOperandos[-1]
         if self.insideIf:
@@ -455,7 +456,6 @@ class LittleDuckListener(ParseTreeListener):
     # Enter a parse tree produced by LittleDuckParser#factor.
     def enterFactor(self, ctx:LittleDuckParser.FactorContext):
         operando = ctx.getText()
-        print(operando[0])
         if operando[0] == '(':  
             self.pilaOperadores.append('(')  
 
