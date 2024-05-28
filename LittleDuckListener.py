@@ -390,7 +390,10 @@ class LittleDuckListener(ParseTreeListener):
 
     # Exit a parse tree produced by LittleDuckParser#expression.
     def exitExpression(self, ctx:LittleDuckParser.ExpressionContext):
-        if(len(self.pilaOperandos) > 2):
+        print("len pila operandos -> ", len(self.pilaOperandos))
+        print("len pila operadores -> ", len(self.pilaOperadores))
+
+        if(len(self.pilaOperandos) > 1 and len(self.pilaOperadores) > 0):
             self.generar_cuadruplo()
         result = self.pilaOperandos[-1]
         if self.insideIf:
