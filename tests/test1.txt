@@ -1,8 +1,15 @@
 program myProgram;
-var x, y, z: int;
+var
+x,z,y: int; 
+a: float;
 
-void function(z: int, a: float, d: int)
-    [var w: int; {x = 5 + 3 * 2 - 1;}];
-
-main {}
+main {
+    a = 1;
+    z = 2;
+    
+    print(2*a);
+    x = 6*3+2*z;
+    print(x +1);
+    y = 4*1;
+    }
 end
